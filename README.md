@@ -58,6 +58,25 @@ cargo build --release
 
 The binary ends up at `target/release/pixelbox`.
 
+## Pairing
+
+Before pixelbox can talk to your Ditoo Pro, you need to put it into Bluetooth pairing mode:
+
+1. **Hold the power button for 8 seconds.** The LED panel will show a pairing animation when the device is ready.
+2. Pair it from your computer using your desktop's Bluetooth settings, or with `bluetoothctl`:
+
+```sh
+bluetoothctl
+# inside bluetoothctl:
+scan on             # wait for "DitooPro" to appear
+pair AA:BB:CC:DD:EE:FF
+trust AA:BB:CC:DD:EE:FF
+connect AA:BB:CC:DD:EE:FF
+exit
+```
+
+You only need to pair once. After that the device will reconnect automatically when powered on.
+
 ## Usage
 
 Every command that talks to the device needs the BLE MAC address, passed with `-a`. You can find the address with the `scan` subcommand.
