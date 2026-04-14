@@ -1,13 +1,14 @@
-/// Divoom BLE binary protocol implementation.
-///
-/// Packet format (NewMode):
-///   0x01 | length_lo length_hi | cmd_id | payload... | checksum_lo checksum_hi | 0x02
-///
-/// Escape sequences applied after framing:
-///   0x01 in payload -> 0x03 0x04
-///   0x02 in payload -> 0x03 0x05
-///   0x03 in payload -> 0x03 0x06
+// Divoom BLE binary protocol implementation.
+//
+// Packet format (NewMode):
+//   0x01 | length_lo length_hi | cmd_id | payload... | checksum_lo checksum_hi | 0x02
+//
+// Escape sequences applied after framing:
+//   0x01 in payload -> 0x03 0x04
+//   0x02 in payload -> 0x03 0x05
+//   0x03 in payload -> 0x03 0x06
 
+#[allow(dead_code)]
 pub mod cmd {
     // Main command IDs from SppProc$CMD_TYPE (decompiled values).
     // Filtered to Ditoo Pro supported commands only — no FM radio,
@@ -145,6 +146,7 @@ pub mod cmd {
     pub const SPP_REQUEST_NEW_FILE_INFO: u8 = 247;
 }
 
+#[allow(dead_code)]
 pub mod ext_cmd {
     // Extended command IDs from SppProc$EXT_CMD_TYPE
     // These are sent as payload[0] inside SPP_DIVOOM_EXTERN_CMD
@@ -239,9 +241,18 @@ impl Packet {
         out.push(0x01);
         for &b in &inner {
             match b {
-                0x01 => { out.push(0x03); out.push(0x04); }
-                0x02 => { out.push(0x03); out.push(0x05); }
-                0x03 => { out.push(0x03); out.push(0x06); }
+                0x01 => {
+                    out.push(0x03);
+                    out.push(0x04);
+                }
+                0x02 => {
+                    out.push(0x03);
+                    out.push(0x05);
+                }
+                0x03 => {
+                    out.push(0x03);
+                    out.push(0x06);
+                }
                 _ => out.push(b),
             }
         }
@@ -300,9 +311,11 @@ mod tests {
         let pkt = Packet::new(0x01, vec![0x02, 0x03]);
         let encoded = pkt.encode();
         assert_eq!(encoded[0], 0x01);
-        assert!(!encoded[1..encoded.len() - 1]
-            .windows(1)
-            .any(|w| w[0] == 0x01 || w[0] == 0x02));
+        assert!(
+            !encoded[1..encoded.len() - 1]
+                .windows(1)
+                .any(|w| w[0] == 0x01 || w[0] == 0x02)
+        );
         assert_eq!(*encoded.last().unwrap(), 0x02);
     }
 

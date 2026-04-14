@@ -1,4 +1,4 @@
-use crate::protocol::{cmd, ext_cmd, Packet};
+use crate::protocol::{Packet, cmd, ext_cmd};
 
 // ---------------------------------------------------------------------------
 // Volume
@@ -143,7 +143,10 @@ pub fn set_mix_music_mode(mode: u8, param: u8, enabled: bool) -> Packet {
 // ---------------------------------------------------------------------------
 
 pub fn set_mic_switch(on: bool) -> Packet {
-    Packet::new(cmd::SPP_SET_SPP_SET_MIC_SWITCH, vec![if on { 1 } else { 0 }])
+    Packet::new(
+        cmd::SPP_SET_SPP_SET_MIC_SWITCH,
+        vec![if on { 1 } else { 0 }],
+    )
 }
 
 pub fn record_ctrl(control: u8) -> Packet {
@@ -171,7 +174,10 @@ pub fn set_poweron_voice_ctrl(control: u8) -> Packet {
 // ---------------------------------------------------------------------------
 
 pub fn set_song_display(enabled: bool) -> Packet {
-    Packet::new(cmd::SPP_SET_SONG_DIS_CTRL, vec![if enabled { 1 } else { 0 }])
+    Packet::new(
+        cmd::SPP_SET_SONG_DIS_CTRL,
+        vec![if enabled { 1 } else { 0 }],
+    )
 }
 
 pub fn get_song_display() -> Packet {
@@ -269,17 +275,17 @@ mod tests {
 
     #[test]
     fn test_set_sd_music_play_mode() {
-        assert_std(&set_sd_music_play_mode(2), c::SPP_SET_SD_MUSIC_PLAY_MODE, &[2]);
+        assert_std(
+            &set_sd_music_play_mode(2),
+            c::SPP_SET_SD_MUSIC_PLAY_MODE,
+            &[2],
+        );
     }
 
     #[test]
     fn test_get_sd_music_list() {
         let pkt = get_sd_music_list(0x0001, 0x00FF);
-        assert_std(
-            &pkt,
-            c::SPP_GET_SD_MUSIC_LIST,
-            &[0x01, 0x00, 0xFF, 0x00],
-        );
+        assert_std(&pkt, c::SPP_GET_SD_MUSIC_LIST, &[0x01, 0x00, 0xFF, 0x00]);
     }
 
     #[test]
@@ -340,7 +346,11 @@ mod tests {
 
     #[test]
     fn test_set_mixer_mode() {
-        assert_std(&set_mixer_mode(1, 5), c::SPP_SET_NEW_MIX_MUSIC_MODE, &[1, 5]);
+        assert_std(
+            &set_mixer_mode(1, 5),
+            c::SPP_SET_NEW_MIX_MUSIC_MODE,
+            &[1, 5],
+        );
     }
 
     #[test]
@@ -388,7 +398,11 @@ mod tests {
 
     #[test]
     fn test_set_poweron_voice_ctrl() {
-        assert_std(&set_poweron_voice_ctrl(1), c::SPP_SET_POWERON_VOICE_CTRL, &[1]);
+        assert_std(
+            &set_poweron_voice_ctrl(1),
+            c::SPP_SET_POWERON_VOICE_CTRL,
+            &[1],
+        );
     }
 
     // -- Song Display ---------------------------------------------------------

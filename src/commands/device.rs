@@ -2,7 +2,7 @@
 
 use chrono::{Datelike, Local, Timelike};
 
-use crate::protocol::{cmd, ext_cmd, Packet};
+use crate::protocol::{Packet, cmd, ext_cmd};
 
 // ---------------------------------------------------------------------------
 // Time
@@ -243,7 +243,12 @@ pub fn set_tool_noise(param: u8) -> Packet {
 pub fn set_tool_scoreboard(enabled: bool, score1: u16, score2: u16) -> Packet {
     Packet::new(
         cmd::SPP_SET_TOOL_INFO,
-        vec![0x03, if enabled { 1 } else { 0 }, score1 as u8, score2 as u8],
+        vec![
+            0x03,
+            if enabled { 1 } else { 0 },
+            score1 as u8,
+            score2 as u8,
+        ],
     )
 }
 
@@ -456,11 +461,7 @@ mod tests {
 
     #[test]
     fn test_set_power_channel() {
-        assert_std(
-            &set_power_channel(3),
-            c::SPP_SET_POWER_CHANNEL,
-            &[0x01, 3],
-        );
+        assert_std(&set_power_channel(3), c::SPP_SET_POWER_CHANNEL, &[0x01, 3]);
     }
 
     #[test]
@@ -545,11 +546,7 @@ mod tests {
     #[test]
     fn test_set_tool_countdown() {
         let pkt = set_tool_countdown(true, 5, 30);
-        assert_std(
-            &pkt,
-            c::SPP_SET_TOOL_INFO,
-            &[0x01, 1, 5, 0, 30, 0],
-        );
+        assert_std(&pkt, c::SPP_SET_TOOL_INFO, &[0x01, 1, 5, 0, 30, 0]);
     }
 
     #[test]

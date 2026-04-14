@@ -1,6 +1,6 @@
 //! LED text, notification, and message commands for the Divoom Ditoo Pro.
 
-use crate::protocol::{cmd, Packet};
+use crate::protocol::{Packet, cmd};
 
 /// Encode a string as UTF-16LE bytes.
 fn encode_utf16le(text: &str) -> Vec<u8> {
@@ -36,10 +36,7 @@ pub fn clear_led_text() -> Packet {
 
 /// Set the text color for 32-pixel word display.
 pub fn set_text_color(r: u8, g: u8, b: u8) -> Packet {
-    Packet::new(
-        cmd::SPP_LIEGHT_PHONE_GIF32_WORD_ATTR,
-        vec![0x05, r, g, b],
-    )
+    Packet::new(cmd::SPP_LIEGHT_PHONE_GIF32_WORD_ATTR, vec![0x05, r, g, b])
 }
 
 /// Set the text scrolling/animation effect for 32-pixel word display.
@@ -177,7 +174,7 @@ mod tests {
         assert_eq!(pkt.command, cmd::SPP_SEND_LED_WORD_CMD);
         // 'A' = [0x41, 0x00], 'B' = [0x42, 0x00] -> 4 bytes
         assert_eq!(pkt.payload[0], 0x01); // enable
-        assert_eq!(pkt.payload[1], 4);    // byte length
+        assert_eq!(pkt.payload[1], 4); // byte length
         assert_eq!(&pkt.payload[2..], &[0x41, 0x00, 0x42, 0x00]);
     }
 

@@ -1,6 +1,6 @@
 //! Display and light mode commands for the Divoom Ditoo Pro.
 
-use crate::protocol::{cmd, ext_cmd, Packet};
+use crate::protocol::{Packet, cmd, ext_cmd};
 
 /// Display light modes selectable via [`set_box_mode`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -58,7 +58,15 @@ pub fn set_box_mode_temperature() -> Packet {
 /// Payload: `[2, brightness, r, g, b, 0, speed_flag]` padded to 10 bytes.
 pub fn set_box_mode_color_light(r: u8, g: u8, b: u8, brightness: u8, speed: bool) -> Packet {
     let speed_flag = if speed { 1u8 } else { 0u8 };
-    let mut payload = vec![LightMode::ColorLight as u8, brightness, r, g, b, 0, speed_flag];
+    let mut payload = vec![
+        LightMode::ColorLight as u8,
+        brightness,
+        r,
+        g,
+        b,
+        0,
+        speed_flag,
+    ];
     payload.resize(10, 0);
     Packet::new(cmd::SPP_SET_BOX_MODE, payload)
 }
@@ -129,10 +137,7 @@ pub fn set_light_effect(params: &[u8; 7]) -> Packet {
     let mut payload = Vec::with_capacity(8);
     payload.push(0x01);
     payload.extend_from_slice(params);
-    Packet::ext(
-        ext_cmd::SPP_SECOND_SEND_DEVICE_LIGHT_EFFECT_CTRL,
-        payload,
-    )
+    Packet::ext(ext_cmd::SPP_SECOND_SEND_DEVICE_LIGHT_EFFECT_CTRL, payload)
 }
 
 /// Reset the light effect to the device default (extended command).
@@ -260,10 +265,7 @@ mod tests {
         let pkt = set_screen_direction(2);
         // Extended commands are wrapped in SPP_DIVOOM_EXTERN_CMD
         assert_eq!(pkt.command, cmd::SPP_DIVOOM_EXTERN_CMD);
-        assert_eq!(
-            pkt.payload,
-            vec![ext_cmd::SPP_SECOND_SET_SCREEN_DIR_CFG, 2]
-        );
+        assert_eq!(pkt.payload, vec![ext_cmd::SPP_SECOND_SET_SCREEN_DIR_CFG, 2]);
     }
 
     #[test]
@@ -298,7 +300,10 @@ mod tests {
         let params: [u8; 7] = [0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70];
         let pkt = set_light_effect(&params);
         assert_eq!(pkt.command, cmd::SPP_DIVOOM_EXTERN_CMD);
-        assert_eq!(pkt.payload[0], ext_cmd::SPP_SECOND_SEND_DEVICE_LIGHT_EFFECT_CTRL);
+        assert_eq!(
+            pkt.payload[0],
+            ext_cmd::SPP_SECOND_SEND_DEVICE_LIGHT_EFFECT_CTRL
+        );
         assert_eq!(pkt.payload[1], 0x01);
         assert_eq!(&pkt.payload[2..], &params);
     }

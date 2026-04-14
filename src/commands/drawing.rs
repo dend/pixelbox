@@ -1,4 +1,4 @@
-use crate::protocol::{cmd, ext_cmd, Packet};
+use crate::protocol::{Packet, cmd, ext_cmd};
 
 // ---------------------------------------------------------------------------
 // Static images
@@ -137,10 +137,7 @@ pub fn scroll(mode: u8, speed: u16) -> Packet {
 // ---------------------------------------------------------------------------
 
 pub fn set_boot_gif(enabled: bool) -> Packet {
-    Packet::new(
-        cmd::SPP_SET_BOOT_GIF,
-        vec![if enabled { 1 } else { 0 }],
-    )
+    Packet::new(cmd::SPP_SET_BOOT_GIF, vec![if enabled { 1 } else { 0 }])
 }
 
 // ---------------------------------------------------------------------------
@@ -196,10 +193,7 @@ mod tests {
         let frame = [0x10, 0x20];
         let pkt = encode_play(5, &frame, 100);
         assert_eq!(pkt.command, cmd::SPP_DRAWING_ENCODE_PLAY);
-        assert_eq!(
-            pkt.payload,
-            vec![5, 2, 0, 100, 0, 0x10, 0x20]
-        );
+        assert_eq!(pkt.payload, vec![5, 2, 0, 100, 0, 0x10, 0x20]);
     }
 
     #[test]
@@ -245,10 +239,7 @@ mod tests {
         let data = [0xDE, 0xAD];
         let pkt = encode_movie_play(0x1234, &data);
         assert_eq!(pkt.command, cmd::SPP_DRAWING_ENCODE_MOVIE_PLAY);
-        assert_eq!(
-            pkt.payload,
-            vec![0x34, 0x12, 2, 0, 0xDE, 0xAD]
-        );
+        assert_eq!(pkt.payload, vec![0x34, 0x12, 2, 0, 0xDE, 0xAD]);
     }
 
     #[test]

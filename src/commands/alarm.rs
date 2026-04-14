@@ -1,4 +1,4 @@
-use crate::protocol::{cmd, Packet};
+use crate::protocol::{Packet, cmd};
 
 /// Voice control actions for alarm recording/playback.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -13,6 +13,7 @@ pub enum AlarmVoiceControl {
 ///
 /// Bits 0-6 correspond to Monday through Sunday.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub struct Weekdays(pub u8);
 
 impl Weekdays {
@@ -102,10 +103,7 @@ pub fn set_alarm_listen_volume(volume: u8) -> Packet {
 
 /// Send an alarm voice control command (record, play, or stop) with a volume level.
 pub fn set_alarm_voice_ctrl(control: AlarmVoiceControl, volume: u8) -> Packet {
-    Packet::new(
-        cmd::SPP_SET_ALARM_VOICE_CTRL,
-        vec![control as u8, volume],
-    )
+    Packet::new(cmd::SPP_SET_ALARM_VOICE_CTRL, vec![control as u8, volume])
 }
 
 /// Configure the sleep timer from a raw config slice.
@@ -163,10 +161,7 @@ mod tests {
     fn test_set_alarm_payload() {
         let pkt = set_alarm(3, true, 7, 30, 1, 0x1F, 2, 0x0201, 80);
         assert_eq!(pkt.command, cmd::SPP_SET_ALARM_TIME_SCENE);
-        assert_eq!(
-            pkt.payload,
-            vec![3, 1, 7, 30, 1, 0x1F, 2, 0x01, 0x02, 80]
-        );
+        assert_eq!(pkt.payload, vec![3, 1, 7, 30, 1, 0x1F, 2, 0x01, 0x02, 80]);
     }
 
     #[test]
