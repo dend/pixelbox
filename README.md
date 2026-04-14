@@ -270,13 +270,6 @@ Packets follow a simple framed format:
 
 Extended commands are wrapped inside `SPP_DIVOOM_EXTERN_CMD` (0xBD), with the extended command ID as the first payload byte.
 
-## Running tests
-
-```sh
-cargo test
-```
-
-172 tests covering packet encoding, checksum calculation, escape sequences, and every command builder function.
 
 ## BLE characteristic
 
