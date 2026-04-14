@@ -4,20 +4,51 @@ A command-line tool for controlling the Divoom Ditoo Pro over Bluetooth Low Ener
 
 Built on [bluer](https://github.com/bluez/bluer), the official Rust interface to the Linux BlueZ stack.
 
-## Requirements
+## Installing on Ubuntu
 
-- Linux with BlueZ (the standard Bluetooth stack on most distros)
-- A Bluetooth adapter that supports BLE
-- D-Bus development headers (for building)
+The quickest way is the install script, which downloads the latest release binary and drops it in `/usr/local/bin`:
 
-On Ubuntu/Debian:
+```sh
+curl -fsSL https://raw.githubusercontent.com/dend/pixelbox/main/install.sh | bash
+```
+
+It detects your architecture (x86_64 or aarch64), installs BlueZ if missing, and starts the bluetooth service.
+
+### Manual install
+
+Alternatively, download the tarball for your architecture from the [releases page](https://github.com/dend/pixelbox/releases), then:
+
+```sh
+# Install runtime dependencies
+sudo apt install bluetooth bluez
+sudo systemctl enable --now bluetooth
+
+# Extract and install the binary
+tar xzf pixelbox-*.tar.gz
+sudo mv pixelbox /usr/local/bin/
+
+# Verify it works
+pixelbox --help
+```
+
+If your user isn't in the `bluetooth` group, add yourself so you can scan and connect without root:
+
+```sh
+sudo usermod -aG bluetooth $USER
+```
+
+Log out and back in for the group change to take effect.
+
+## Building from source
+
+You need Rust and a few system headers:
 
 ```sh
 sudo apt install libdbus-1-dev pkg-config bluetooth bluez
-sudo systemctl start bluetooth
+sudo systemctl enable --now bluetooth
 ```
 
-## Building
+Then:
 
 ```sh
 git clone https://github.com/dend/pixelbox.git
@@ -25,7 +56,7 @@ cd pixelbox
 cargo build --release
 ```
 
-The binary ends up at `target/release/pixelbox`. Copy it wherever you want or run it with `cargo run --release --`.
+The binary ends up at `target/release/pixelbox`.
 
 ## Usage
 
