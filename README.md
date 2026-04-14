@@ -81,6 +81,8 @@ You only need to pair once. After that the device will reconnect automatically w
 
 Every command that talks to the device needs the BLE MAC address, passed with `-a`. You can find the address with the `scan` subcommand.
 
+Commands are grouped: `pixelbox device`, `pixelbox display`, `pixelbox alarm`, `pixelbox audio`, `pixelbox drawing`, `pixelbox text`. Run any group with `--help` to see its subcommands.
+
 ### Finding your device
 
 ```sh
@@ -90,18 +92,152 @@ pixelbox scan --duration 15    # scan for 15 seconds instead of the default 5
 
 The Ditoo Pro advertises as `DitooPro` over BLE. It's highlighted in the scan output. Grab the address (e.g. `AA:BB:CC:DD:EE:FF`).
 
-### Setting the clock
-
-Syncs the device clock to your system time:
+### Device settings
 
 ```sh
-pixelbox set-time -a AA:BB:CC:DD:EE:FF
+# Sync clock to your system time
+pixelbox device set-time -a AA:BB:CC:DD:EE:FF
+
+# Set brightness (0-100)
+pixelbox device set-brightness -a AA:BB:CC:DD:EE:FF -l 75
+
+# Rename the device
+pixelbox device set-name -a AA:BB:CC:DD:EE:FF -n "My Ditoo"
+
+# Temperature in celsius
+pixelbox device set-temp-type -a AA:BB:CC:DD:EE:FF --celsius
+
+# Auto power-off after 30 minutes (0 to disable)
+pixelbox device set-auto-power-off -a AA:BB:CC:DD:EE:FF -m 30
+
+# Eye guard on/off
+pixelbox device set-eye-guard -a AA:BB:CC:DD:EE:FF --enable
+
+# Set device language (0=en, 3=ja, 9=de, 12=ko, ...)
+pixelbox device set-language -a AA:BB:CC:DD:EE:FF -l 0
+
+# Countdown timer
+pixelbox device set-countdown -a AA:BB:CC:DD:EE:FF --enable --minutes 5 --seconds 0
+
+# Scoreboard
+pixelbox device set-scoreboard -a AA:BB:CC:DD:EE:FF --enable --score1 3 --score2 2
+
+# Game key input
+pixelbox device game-key -a AA:BB:CC:DD:EE:FF -k 1
 ```
 
-### Setting brightness
+### Display modes
 
 ```sh
-pixelbox set-brightness -a AA:BB:CC:DD:EE:FF -l 75   # 0-100
+# Switch to clock face
+pixelbox display set-mode -a AA:BB:CC:DD:EE:FF -m clock
+
+# Switch to temperature display
+pixelbox display set-mode -a AA:BB:CC:DD:EE:FF -m temperature
+
+# Special effect (pass effect ID as --param)
+pixelbox display set-mode -a AA:BB:CC:DD:EE:FF -m special --param 3
+
+# Sound-reactive visualizer
+pixelbox display set-mode -a AA:BB:CC:DD:EE:FF -m sound --param 0
+
+# Music visualizer
+pixelbox display set-mode -a AA:BB:CC:DD:EE:FF -m music --param 1
+
+# Solid color light
+pixelbox display set-color-light -a AA:BB:CC:DD:EE:FF --r 255 --g 0 --b 128 --brightness 80
+
+# Preview a color without saving
+pixelbox display try-color -a AA:BB:CC:DD:EE:FF --r 0 --g 255 --b 0
+
+# Switch work mode (bluetooth, sd, linein, uac)
+pixelbox display change-mode -a AA:BB:CC:DD:EE:FF -m sd
+
+# Screen rotation / mirror / on-off
+pixelbox display set-screen-dir -a AA:BB:CC:DD:EE:FF -d 1
+pixelbox display set-screen-mirror -a AA:BB:CC:DD:EE:FF --enable
+pixelbox display set-screen-on -a AA:BB:CC:DD:EE:FF --on
+```
+
+### Alarms and sleep
+
+```sh
+# List current alarms
+pixelbox alarm get -a AA:BB:CC:DD:EE:FF
+
+# Set alarm 0 for 7:30 AM, all days, volume 50
+pixelbox alarm set -a AA:BB:CC:DD:EE:FF --id 0 --enable --hour 7 --minute 30 --weekdays 127 --volume 50
+
+# Sleep mode color and brightness
+pixelbox alarm set-sleep-color -a AA:BB:CC:DD:EE:FF --r 20 --g 0 --b 40
+pixelbox alarm set-sleep-light -a AA:BB:CC:DD:EE:FF -l 10
+```
+
+### Audio
+
+```sh
+# Volume
+pixelbox audio set-volume -a AA:BB:CC:DD:EE:FF -l 60
+
+# Playback controls
+pixelbox audio play-pause -a AA:BB:CC:DD:EE:FF
+pixelbox audio next -a AA:BB:CC:DD:EE:FF
+pixelbox audio prev -a AA:BB:CC:DD:EE:FF
+
+# Play SD card track by ID
+pixelbox audio sd-play -a AA:BB:CC:DD:EE:FF --id 3
+
+# 10-band equalizer (mode + comma-separated band values)
+pixelbox audio set-equalizer -a AA:BB:CC:DD:EE:FF -m 1 -b "80,75,70,65,60,60,65,70,75,80"
+pixelbox audio reset-equalizer -a AA:BB:CC:DD:EE:FF
+
+# Mic on/off
+pixelbox audio set-mic -a AA:BB:CC:DD:EE:FF --on
+
+# Mute the startup sound
+pixelbox audio mute-startup -a AA:BB:CC:DD:EE:FF
+```
+
+### Drawing and pixel art
+
+The Ditoo Pro has a 16x16 pixel display.
+
+```sh
+# Enter drawing pad, draw some pixels, exit
+pixelbox drawing pad-enter -a AA:BB:CC:DD:EE:FF
+pixelbox drawing pad-draw -a AA:BB:CC:DD:EE:FF -x 0 -y 0 --r 255 --g 0 --b 0
+pixelbox drawing pad-draw -a AA:BB:CC:DD:EE:FF -x 8 -y 8 --r 0 --g 255 --b 0
+pixelbox drawing pad-exit -a AA:BB:CC:DD:EE:FF
+
+# GIF animation speed
+pixelbox drawing set-gif-speed -a AA:BB:CC:DD:EE:FF -s 500
+
+# Enable/disable boot animation
+pixelbox drawing set-boot-gif -a AA:BB:CC:DD:EE:FF --enable
+
+# Scroll mode
+pixelbox drawing scroll -a AA:BB:CC:DD:EE:FF -m 1 -s 100
+```
+
+### Text and notifications
+
+```sh
+# Send text to the LED display
+pixelbox text send -a AA:BB:CC:DD:EE:FF -t "Hello!"
+
+# Clear the text
+pixelbox text clear -a AA:BB:CC:DD:EE:FF
+
+# Scrolling text with speed
+pixelbox text scroll-text -a AA:BB:CC:DD:EE:FF -t "Breaking news..." --speed 80
+
+# Set text color / effect / size
+pixelbox text set-color -a AA:BB:CC:DD:EE:FF --r 255 --g 200 --b 0
+pixelbox text set-effect -a AA:BB:CC:DD:EE:FF -e 2
+pixelbox text set-size -a AA:BB:CC:DD:EE:FF -s 1
+
+# Reset notifications
+pixelbox text reset-notify -a AA:BB:CC:DD:EE:FF
 ```
 
 ### Querying device info
@@ -110,31 +246,16 @@ pixelbox set-brightness -a AA:BB:CC:DD:EE:FF -l 75   # 0-100
 pixelbox info -a AA:BB:CC:DD:EE:FF
 ```
 
-Shows the device name, connection status, and signal strength.
+Shows the device name, connection status, and signal strength (no BLE connection needed, reads from BlueZ cache).
 
-## Protocol library
-
-The CLI only wires up a few commands right now, but the underlying protocol library (`src/commands/`) has full coverage of the Ditoo Pro's capabilities. This is the same binary protocol the official Divoom Android app uses over BLE. You can use it as a Rust library to build your own tooling.
-
-### Ditoo Pro specs
+## Ditoo Pro specs
 
 - 16x16 pixel LED display
 - BLE (Bluetooth Low Energy) connection, not classic SPP
 - Speaker, microphone, SD card slot
 - No FM radio
 
-### Command modules
-
-| Module | What it covers |
-|---|---|
-| `commands::device` | System time, brightness, device name, power on/off, auto power-off, eye guard, temperature units, game input, countdown/stopwatch/scoreboard/noise tools, language, connection config |
-| `commands::display` | Display modes (clock, temperature, color light, special effects, sound reactive, music visualization), screen rotation/mirror/on-off, light effects, work mode switching (BT/SD/LineIn/USB) |
-| `commands::alarm` | Alarms with scene/GIF, alarm preview, alarm volume, voice alarms (record/play/stop), sleep timer with color/light/scene, auto power-off |
-| `commands::audio` | Volume, play/pause/skip, SD card music (select/seek/list), equalizer (10-band), mixer, sound control, microphone, karaoke, voice recording, power-on sound config |
-| `commands::drawing` | 16x16 pixel art (static and animated), real-time drawing pad, movie playback, user GIF management, sand paint, scrolling, boot animation, GIF speed/timing |
-| `commands::text` | LED text (UTF-16LE), scrolling text, 32-pixel text attributes (color/effect/size/speed/frame), notifications with color, daily time messages |
-
-### Wire protocol
+## Wire protocol
 
 Packets follow a simple framed format:
 
@@ -149,32 +270,13 @@ Packets follow a simple framed format:
 
 Extended commands are wrapped inside `SPP_DIVOOM_EXTERN_CMD` (0xBD), with the extended command ID as the first payload byte.
 
-### Example: using the library directly
-
-```rust
-use pixelbox::commands::{device, display, drawing};
-
-// Set brightness to 60%
-let pkt = device::set_brightness(60);
-let bytes = pkt.encode();
-// -> write `bytes` to BLE characteristic in 20-byte chunks
-
-// Switch to clock display
-let pkt = display::set_box_mode_clock();
-
-// Set a single pixel on the drawing pad (red at position 8,4)
-let enter = drawing::drawing_pad_enter(0, 0, 0);
-let draw = drawing::drawing_pad_ctrl(8, 4, 255, 0, 0);
-let exit = drawing::drawing_pad_exit();
-```
-
 ## Running tests
 
 ```sh
 cargo test
 ```
 
-There are 176 tests covering packet encoding, checksum calculation, escape sequences, and every command builder function.
+172 tests covering packet encoding, checksum calculation, escape sequences, and every command builder function.
 
 ## BLE characteristic
 
