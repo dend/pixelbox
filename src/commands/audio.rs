@@ -139,21 +139,11 @@ pub fn set_mix_music_mode(mode: u8, param: u8, enabled: bool) -> Packet {
 }
 
 // ---------------------------------------------------------------------------
-// Mic & Karaoke
+// Mic & Recording
 // ---------------------------------------------------------------------------
 
 pub fn set_mic_switch(on: bool) -> Packet {
     Packet::new(cmd::SPP_SET_SPP_SET_MIC_SWITCH, vec![if on { 1 } else { 0 }])
-}
-
-pub fn karaoke_ctrl(params: &[u8]) -> Packet {
-    let mut payload = vec![0x01];
-    payload.extend_from_slice(params);
-    Packet::ext(ext_cmd::SPP_SECOND_KARAOKE_CTRL, payload)
-}
-
-pub fn karaoke_reset() -> Packet {
-    Packet::ext(ext_cmd::SPP_SECOND_KARAOKE_CTRL, vec![0x00])
 }
 
 pub fn record_ctrl(control: u8) -> Packet {
@@ -367,29 +357,12 @@ mod tests {
         );
     }
 
-    // -- Mic & Karaoke --------------------------------------------------------
+    // -- Mic & Recording ------------------------------------------------------
 
     #[test]
     fn test_set_mic_switch() {
         assert_std(&set_mic_switch(true), c::SPP_SET_SPP_SET_MIC_SWITCH, &[1]);
         assert_std(&set_mic_switch(false), c::SPP_SET_SPP_SET_MIC_SWITCH, &[0]);
-    }
-
-    #[test]
-    fn test_karaoke_ctrl() {
-        let pkt = karaoke_ctrl(&[0xAA, 0xBB]);
-        assert_ext(&pkt, ec::SPP_SECOND_KARAOKE_CTRL, &[0x01, 0xAA, 0xBB]);
-    }
-
-    #[test]
-    fn test_karaoke_ctrl_empty() {
-        let pkt = karaoke_ctrl(&[]);
-        assert_ext(&pkt, ec::SPP_SECOND_KARAOKE_CTRL, &[0x01]);
-    }
-
-    #[test]
-    fn test_karaoke_reset() {
-        assert_ext(&karaoke_reset(), ec::SPP_SECOND_KARAOKE_CTRL, &[0x00]);
     }
 
     #[test]
@@ -441,7 +414,7 @@ mod tests {
             get_volume(),
             play_pause(),
             set_equalizer(0, &[0; 10]),
-            karaoke_ctrl(&[1, 2, 3]),
+            record_ctrl(1),
         ];
         for pkt in &packets {
             let wire = pkt.encode();

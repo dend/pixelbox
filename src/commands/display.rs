@@ -16,11 +16,12 @@ pub enum LightMode {
 }
 
 /// Device work/input modes selectable via [`change_mode`].
+///
+/// The Ditoo Pro does not have FM radio hardware, so `Fm` is excluded.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
 pub enum WorkMode {
     Bluetooth = 0,
-    Fm = 1,
     LineIn = 2,
     Sd = 3,
     Uac = 7,
@@ -343,7 +344,6 @@ mod tests {
     #[test]
     fn test_work_mode_repr() {
         assert_eq!(WorkMode::Bluetooth as u8, 0);
-        assert_eq!(WorkMode::Fm as u8, 1);
         assert_eq!(WorkMode::LineIn as u8, 2);
         assert_eq!(WorkMode::Sd as u8, 3);
         assert_eq!(WorkMode::Uac as u8, 7);

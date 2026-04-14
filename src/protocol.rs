@@ -9,7 +9,9 @@
 ///   0x03 in payload -> 0x03 0x06
 
 pub mod cmd {
-    // Main command IDs from SppProc$CMD_TYPE (decompiled values)
+    // Main command IDs from SppProc$CMD_TYPE (decompiled values).
+    // Filtered to Ditoo Pro supported commands only — no FM radio,
+    // multi-device, 25-dot (5x5), or 64x64 big-device commands.
     pub const SPP_JSON: u8 = 0;
     pub const SPP_COMMAND_CHECK: u8 = 1;
     pub const SPP_SET_SD_PLAY_MUSIC_ID: u8 = 4;
@@ -21,11 +23,9 @@ pub mod cmd {
     pub const SPP_GET_PLAY_STATUS: u8 = 11;
     pub const SPP_GET_STDB_MODE: u8 = 18;
     pub const SPP_SET_POWERON_VOICE_CTRL: u8 = 19;
-    pub const SPP_LIEGHT_SET_25DOTS_PIC: u8 = 20;
     pub const SPP_SET_GIF_SPEED_CMD: u8 = 22;
     pub const SPP_SET_SYSTEM_TIME: u8 = 23;
     pub const SPP_STOP_SEND_GIF: u8 = 25;
-    pub const SPP_LIEGHT_SET_25DOTS_ATTR: u8 = 30;
     pub const SPP_SPP_POWER_ON_OFF_INFO: u8 = 31;
     pub const SPP_SEND_GAME_CTRL_INFO: u8 = 32;
     pub const SPP_SEND_GAME_CTRL_KEY_UP_INFO: u8 = 33;
@@ -36,7 +36,6 @@ pub mod cmd {
     pub const SPP_SEND_APP_NEWEST_TIME: u8 = 38;
     pub const SPP_SET_APP_BR_PASSWORD: u8 = 39;
     pub const SPP_SET_TEMP_TYPE: u8 = 43;
-    pub const SPP_SET_BOX_MODE: u8 = 69;
     pub const SPP_SET_HPUR_TYPE: u8 = 45;
     pub const SPP_SET_PLAY_STATUS: u8 = 47;
     pub const SPP_SET_VOL: u8 = 49;
@@ -46,8 +45,6 @@ pub mod cmd {
     pub const SPP_SCROLL: u8 = 53;
     pub const SPP_GET_FILE_VERSION2: u8 = 54;
     pub const SPP_GET_FILE_VERSION2_LIST: u8 = 55;
-    pub const SPP_DRAWING_MUL_PAD_CTRL: u8 = 58;
-    pub const SPP_DRAWING_BIG_PAD_CTRL: u8 = 59;
     pub const SPP_SET_ANCS_NOTICE_PIC: u8 = 60;
     pub const SPP_MOVE_RESET_IFRAME: u8 = 62;
     pub const SPP_SET_SLEEP_TIME: u8 = 64;
@@ -55,10 +52,10 @@ pub mod cmd {
     pub const SPP_GET_ALARM_TIME_SCENE: u8 = 66;
     pub const SPP_SET_ALARM_TIME_SCENE: u8 = 67;
     pub const SPP_SET_BOX_COLOR: u8 = 68;
+    pub const SPP_SET_BOX_MODE: u8 = 69;
     pub const SPP_GET_BOX_MODE: u8 = 70;
     pub const SPP_APP_NEED_GET_MUSIC_LIST: u8 = 71;
     pub const SPP_PAUSE_SYS_UPDATE_DATA: u8 = 72;
-    pub const SPP_SET_MUL_BOX_COLOR: u8 = 73;
     pub const SPP_SET_ANDROID_ANCS: u8 = 80;
     pub const SPP_SET_ALARM_TIME_GIF: u8 = 81;
     pub const SPP_SET_BOOT_GIF: u8 = 82;
@@ -75,26 +72,15 @@ pub mod cmd {
     pub const SPP_SEND_NET_TEMP_INFO: u8 = 93;
     pub const SPP_SEND_NET_TEMP_DISP_INFO: u8 = 94;
     pub const SPP_SEND_CUR_NET_TEMP: u8 = 95;
-    pub const SPP_GET_FM_CURRENT_FREQ: u8 = 96;
-    pub const SPP_SET_FM_CURRENT_FREQ: u8 = 97;
-    pub const SPP_SET_FM_AUTOMATIC_SEARCH: u8 = 99;
-    pub const SPP_GET_FM_COUNT_OR_FREQ: u8 = 100;
-    pub const SPP_SET_FM_FAVOURITE: u8 = 103;
-    pub const SPP_GET_FM_AUTOMATIC_SEARCH_STATUS: u8 = 104;
-    pub const SPP_SET_FM_REGION: u8 = 105;
     pub const SPP_SET_MIX_MUISE_MODE: u8 = 106;
-    pub const SPP_DRAWING_MUL_ENCODE_GIF_PLAY: u8 = 107;
     pub const SPP_DRAWING_ENCODE_MOVIE_PLAY: u8 = 108;
-    pub const SPP_DRAWING_MUL_ENCODE_MOVIE_PLAY: u8 = 109;
     pub const SPP_DRAWING_CTRL_MOVIE_PLAY: u8 = 110;
     pub const SPP_DRAWING_MUL_PAD_ENTER: u8 = 111;
-    pub const SPP_GET_FM_REGION: u8 = 112;
     pub const SPP_GET_TOOL_INFO: u8 = 113;
     pub const SPP_SET_TOOL_INFO: u8 = 114;
     pub const SPP_GET_NET_TEMP_DISP_INFO: u8 = 115;
     pub const SPP_SET_SYSTEM_BRIGHT: u8 = 116;
     pub const SPP_SET_DEVICE_NAME: u8 = 117;
-    pub const SPP_SET_MUL_DEVICE_CTRL: u8 = 119;
     pub const SPP_LED_UPDATE_FONT_INFO: u8 = 124;
     pub const SPP_SET_DIVOOM_LEAVE_MSG_GIF: u8 = 126;
     pub const SPP_DEL_LEAVE_MSG_GIF: u8 = 127;
@@ -109,7 +95,6 @@ pub mod cmd {
     pub const SPP_SET_POWER_CHANNEL: u8 = 138;
     pub const SPP_APP_NEW_GIF_CMD2020: u8 = 139;
     pub const SPP_APP_NEW_USER_DEFINE2020: u8 = 140;
-    pub const SPP_APP_BIG64_USER_DEFINE: u8 = 141;
     pub const SPP_APP_GET_USER_DEFINE_INFO: u8 = 142;
     pub const SPP_LOCAL_PICTURE: u8 = 143;
     pub const SPP_SYS_DEVICE_UPDATE: u8 = 147;
@@ -177,8 +162,6 @@ pub mod ext_cmd {
     pub const SPP_SECOND_SET_GIF_PLAY_TIME_CFG: u8 = 27;
     pub const SPP_SECOND_SET_MUSIC_NAME_CFG: u8 = 28;
     pub const SPP_SECOND_RECORD_CTRL: u8 = 29;
-    pub const SPP_SECOND_KARAOKE_CTRL: u8 = 30;
-    pub const SPP_SECOND_WIRELESS_MIC_CTRL: u8 = 32;
     pub const SPP_SECOND_TOUCH: u8 = 33;
     pub const SPP_SECOND_SET_SCREEN_DIR_CFG: u8 = 37;
     pub const SPP_SECOND_SET_SCREEN_MIRROR_CFG: u8 = 38;

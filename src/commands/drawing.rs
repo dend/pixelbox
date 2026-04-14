@@ -64,10 +64,6 @@ pub fn encode_movie_play(file_id: u16, data: &[u8]) -> Packet {
     Packet::new(cmd::SPP_DRAWING_ENCODE_MOVIE_PLAY, payload)
 }
 
-pub fn play_mul_encode_gif() -> Packet {
-    Packet::new(cmd::SPP_DRAWING_MUL_ENCODE_GIF_PLAY, vec![])
-}
-
 // ---------------------------------------------------------------------------
 // User GIF
 // ---------------------------------------------------------------------------
@@ -253,13 +249,6 @@ mod tests {
             pkt.payload,
             vec![0x34, 0x12, 2, 0, 0xDE, 0xAD]
         );
-    }
-
-    #[test]
-    fn test_play_mul_encode_gif() {
-        let pkt = play_mul_encode_gif();
-        assert_eq!(pkt.command, cmd::SPP_DRAWING_MUL_ENCODE_GIF_PLAY);
-        assert!(pkt.payload.is_empty());
     }
 
     #[test]

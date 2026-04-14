@@ -10,7 +10,7 @@ const DIVOOM_CHARACTERISTIC: bluer::Uuid =
     bluer::Uuid::from_u128(0x49535343_1e4d_4bd9_ba61_23c647249616);
 
 #[derive(Parser)]
-#[command(name = "pixelbox", about = "Control Divoom devices over BLE")]
+#[command(name = "pixelbox", about = "Control Divoom Ditoo Pro over BLE")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
